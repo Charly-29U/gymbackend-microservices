@@ -1,0 +1,15 @@
+# Stage 1: Build the application using maven
+FROM maven:3.9.8-eclipse-temurin-17 AS build
+WORKDIR /app
+# Copy the module's pom and src
+COPY pom.xml .
+COPY src ./src
+# Build the module
+RUN mvn clean package -DskipTests
+
+# Stage 2: Create the runtime image
+FROM openjdk:17-jdk-slim
+WORKDIR /app
+COPY --from=build /app/target/*.jar app.jar
+EXPOSE 8082
+ENTRYPOINT ["java", "-jar", "app.jar"]
