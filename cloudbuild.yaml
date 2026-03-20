@@ -1,0 +1,51 @@
+substitutions:
+  # Reemplaza estos nombres si tus imágenes tienen otro naming.
+  _API_GATEWAY_IMAGE: api-gateway
+  _CATEGORY_SERVICE_IMAGE: category-service
+
+steps:
+  - name: 'gcr.io/cloud-builders/docker'
+    id: 'build-api-gateway'
+    entrypoint: 'sh'
+    args:
+      - '-c'
+      - |
+        set -e
+        if [ -d "api-gateway" ]; then
+          CTX="api-gateway"
+        elif [ -d "gymbackend-microservices/api-gateway" ]; then
+          CTX="gymbackend-microservices/api-gateway"
+        else
+          echo "No se encontró el directorio de contexto para api-gateway."
+          ls -la
+          exit 1
+        fi
+
+        IMAGE_URI="gcr.io/$PROJECT_ID/${_API_GATEWAY_IMAGE}:${SHORT_SHA}"
+        docker build -t "${IMAGE_URI}" -f "${CTX}/Dockerfile" "${CTX}"
+        docker push "${IMAGE_URI}"
+
+  - name: 'gcr.io/cloud-builders/docker'
+    id: 'build-category-service'
+    entrypoint: 'sh'
+    args:
+      - '-c'
+      - |
+        set -e
+        if [ -d "category-service" ]; then
+          CTX="category-service"
+        elif [ -d "gymbackend-microservices/category-service" ]; then
+          CTX="gymbackend-microservices/category-service"
+        else
+          echo "No se encontró el directorio de contexto para category-service."
+          ls -la
+          exit 1
+        fi
+
+        IMAGE_URI="gcr.io/$PROJECT_ID/${_CATEGORY_SERVICE_IMAGE}:${SHORT_SHA}"
+        docker build -t "${IMAGE_URI}" -f "${CTX}/Dockerfile" "${CTX}"
+        docker push "${IMAGE_URI}"
+
+images:
+  - 'gcr.io/$PROJECT_ID/api-gateway:${SHORT_SHA}'
+  - 'gcr.io/$PROJECT_ID/category-service:${SHORT_SHA}'
