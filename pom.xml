@@ -9,13 +9,8 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>shared-events</module>
         <module>api-gateway</module>
-        <module>user-service</module>
         <module>category-service</module>
-        <module>product-service</module>
-        <module>inventory-service</module>
-        <module>report-service</module>
     </modules>
 
     <properties>
