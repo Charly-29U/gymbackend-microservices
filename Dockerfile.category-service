@@ -1,12 +1,10 @@
-# Stage 1: Build the application using Maven
+# Stage 1: Build the application using maven
 FROM maven:3.9.8-eclipse-temurin-17 AS build
 WORKDIR /app
-# Copy the root pom and src
-COPY pom.xml .
-COPY api-gateway/ api-gateway/
-COPY category-service/ category-service/
+# Copy the whole project to the container
+COPY . .
 # Build the specific module
-RUN mvn clean package -pl category-service -am -DskipTests
+RUN mvn -B -pl category-service clean package -DskipTests
 
 # Stage 2: Create the runtime image
 FROM eclipse-temurin:17-jre-alpine

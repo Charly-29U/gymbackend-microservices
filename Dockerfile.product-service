@@ -4,11 +4,11 @@ WORKDIR /app
 # Copy the whole project to the container
 COPY . .
 # Build the specific module
-RUN mvn -B -pl api-gateway clean package -DskipTests
+RUN mvn -B -pl product-service clean package -DskipTests
 
 # Stage 2: Create the runtime image
 FROM eclipse-temurin:17-jre-alpine
 WORKDIR /app
-COPY --from=build /app/api-gateway/target/*.jar app.jar
-EXPOSE 8080
+COPY --from=build /app/product-service/target/*.jar app.jar
+EXPOSE 8083
 ENTRYPOINT ["java", "-jar", "app.jar"]
